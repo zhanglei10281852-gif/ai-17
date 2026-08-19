@@ -65,7 +65,7 @@ func (w *Worker) RunOnce(ctx context.Context) error {
 		for _, job := range jobs {
 			if err := w.processJob(ctx, tx, job); err != nil {
 				dead := job.Attempts >= job.MaxAttempts
-				backoff := job.RetryBackoff()
+				backoff := time.Duration(job.Attempts*job.Attempts) * time.Second
 				if retryErr := tx.RetryJob(ctx, job.ID, now.Add(backoff), err.Error(), dead); retryErr != nil {
 					return fmt.Errorf("retry job %s: %w", job.ID, retryErr)
 				}

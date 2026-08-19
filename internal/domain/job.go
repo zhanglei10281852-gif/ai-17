@@ -38,11 +38,3 @@ func (j OutboxJob) Clone() OutboxJob {
 	clone.Payload = append([]byte(nil), j.Payload...)
 	return clone
 }
-
-func (j OutboxJob) RetryBackoff() time.Duration {
-	attempts := j.MaxAttempts
-	if attempts < 1 {
-		attempts = 1
-	}
-	return time.Duration(attempts*attempts) * time.Second
-}
